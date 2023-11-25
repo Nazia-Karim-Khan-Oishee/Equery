@@ -14,21 +14,11 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  profession: {
+  role: {
     type: String,
   },
-  hobby: {
-    type: String,
-  },
+
   profile_image: {
-    type: String,
-    default: "",
-  },
-  images: {
-    type: [String],
-    default: [],
-  },
-  audio: {
     type: String,
     default: "",
   },

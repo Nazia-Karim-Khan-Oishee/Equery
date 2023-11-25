@@ -3,33 +3,6 @@ const path = require("path");
 const bcrypt = require("bcrypt");
 const passport = require("passport");
 
-// const users = []; // store the user info here
-
-// const initializePassport = require("../config/passport");
-// initializePassport(
-//   passport,
-//   email => users.find(user => user.email === email),
-//   id => users.find(user => user.id === id)
-//   );
-
-const getLogin = async (req, res) => {
-  const filePath = path.join(__dirname, "..", "views", "login.html");
-  res.sendFile(filePath);
-};
-
-const postLogin = (req, res, next) => {
-  passport.authenticate("local", {
-    successRedirect: "/media-pages",
-    failureRedirect: "/login",
-    failureFlash: true,
-  })(req, res, next);
-};
-
-const getRegister = async (req, res) => {
-  const filePath = path.join(__dirname, "..", "views", "register.html");
-  res.sendFile(filePath);
-};
-
 const postRegister = async (req, res, next) => {
   const { email, password } = req.body;
   const name = req.body.username;
@@ -46,209 +19,37 @@ const postRegister = async (req, res, next) => {
   if (errors.length > 0) {
     res.status(400).json({ error: errors });
   } else {
-    //Create New User
+    // Create New User
     try {
-      User.findOne({ email: email }).then((user) => {
-        if (user) {
-          errors.push("User already exists with this email!");
-          res.status(400).json({ error: errors });
-        } else {
-          bcrypt.genSalt(10, (err, salt) => {
-            if (err) {
-              errors.push(err);
-              res.status(400).json({ error: errors });
-            } else {
-              bcrypt.hash(password, salt, (err, hash) => {
-                if (err) {
-                  errors.push(err);
-                  res.status(400).json({ error: errors });
-                } else {
-                  const newUser = new User({
-                    name,
-                    email,
-                    password: hash,
-                  });
-                  newUser
-                    .save()
-                    .then(() => {
-                      //   res.redirect("/login");
-                      console.log("Register Successfull");
-                    })
-                    .catch(() => {
-                      errors.push("Please try again");
-                      res.status(400).json({ error: errors });
-                    });
-                }
-              });
-            }
-          });
-        }
-      });
-    } catch {
-      console.log("error");
-    }
-  }
-};
-const getProfileInfos = async (req, res) => {
-  try {
-    const users = await User.find().select("-password");
-    res.json(users);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
+      const user = await User.findOne({ email: email });
 
-const updateProfile = async (req, res) => {
-  try {
-    const { name, currentPassword, newPassword, hobby, profession } = req.body;
-    console.log(newPassword);
-
-    const userId = req.user.id;
-    const user = await User.findById(userId);
-    console.log(user);
-
-    // Update the password if provided
-    if (newPassword) {
-      const isPasswordValid = await bcrypt.compare(
-        currentPassword,
-        user.password
-      );
-
-      if (!isPasswordValid) {
-        return res.status(400).json({ error: "Current password is incorrect" });
+      if (user) {
+        errors.push("User already exists with this email!");
+        return res.status(400).json({ error: errors });
       }
 
-      const hashedPassword = await bcrypt.hash(newPassword, 10);
-      user.password = hashedPassword;
+      const salt = await bcrypt.genSalt(10);
+      const hash = await bcrypt.hash(password, salt);
+
+      const newUser = new User({
+        name,
+        email,
+        password: hash,
+      });
+
+      await newUser.save();
+
+      console.log("Registration Successful");
+      // You might want to redirect or send a success response here.
+      res.status(200).json({ success: true });
+    } catch (error) {
+      console.error("Error during registration:", error);
+      errors.push("Please try again");
+      res.status(400).json({ error: errors });
     }
-
-    // Update the designation if provided
-    if (hobby) {
-      user.hobby = hobby;
-    }
-
-    if (profession) {
-      user.profession = profession;
-    }
-
-    await user.save();
-
-    res.json({ message: "User information updated successfully" });
-  } catch (err) {
-    return res.status(500).json({ msg: err.message });
-  }
-};
-
-const deleteProfile = async (req, res) => {
-  try {
-    const profileID = req.params.id;
-    const profileInfo = await User.findById(profileID);
-
-    if (!profileInfo) {
-      return res.status(404).json({ error: "Profile information not found" });
-    }
-
-    await profileInfo.deleteOne({ _id: profileID });
-
-    res.json({ message: "Profile information deleted successfully" });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-// const getMediaPage = async (req, res) => {
-//   const filePath = path.join(__dirname, "..", "views", "mediaFiles.html");
-//   res.sendFile(filePath);
-// };
-
-const postProfileImage = async (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({ message: "No file provided" });
-    }
-    const photo = req.file.filename;
-
-    const userId = req.user.id;
-    const user = await User.findById(userId);
-    console.log(user);
-
-    if (photo) {
-      user.profile_image = photo;
-    }
-    await user.save();
-
-    res.json({ message: "Profile image updated successfully" });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-const postMultipleImages = async (req, res) => {
-  try {
-    if (!req.files) {
-      return res.status(400).json({ message: "No file provided" });
-    }
-
-    const photo = req.files.map((file) => file.filename);
-
-    const userId = req.user.id;
-    const user = await User.findById(userId);
-
-    if (photo) {
-      user.images = photo;
-    }
-    await user.save();
-
-    res.json({ message: "Multiple images updated successfully" });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-const getMultipleImages = async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const user = await User.findById(userId);
-    const images = user.images;
-
-    res.json({ images });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-const postAudioFile = async (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({ message: "No file provided" });
-    }
-    const audio = req.file.filename;
-
-    const userId = req.user.id;
-    const user = await User.findById(userId);
-    console.log(user);
-
-    if (audio) {
-      user.audio = audio;
-    }
-    await user.save();
-
-    res.json({ message: "Audio updated successfully" });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
   }
 };
 
 module.exports = {
-  getLogin,
-  getRegister,
-  postLogin,
   postRegister,
-  getProfileInfos,
-  updateProfile,
-  deleteProfile,
-  postProfileImage,
-  postMultipleImages,
-  getMultipleImages,
-  postAudioFile,
 };
