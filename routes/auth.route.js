@@ -1,15 +1,17 @@
 const express = require("express");
 const router = express.Router();
-const { postRegister } = require("../controllers/auth.controller");
+const {
+  postRegister,
+  getLogout,
+  postLogin,
+  getLogin,
+  showerror,
+} = require("../controllers/auth.controller");
 
 router.post("/register", postRegister);
-
-router.get("/logout", (req, res) => {
-  req.logout((err) => {
-    if (err) {
-      res.json({ error: err });
-    } else res.redirect("/");
-  });
-});
+router.get("/logout", getLogout);
+router.post("/login", postLogin);
+router.get("/login", getLogin);
+router.get("/error", showerror);
 
 module.exports = router;
