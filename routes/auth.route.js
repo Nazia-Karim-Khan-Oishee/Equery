@@ -5,6 +5,7 @@ const {
   getLogout,
   postLogin,
   getLogin,
+  putPasssword,
   showerror,
 } = require("../controllers/auth.controller");
 
@@ -13,5 +14,7 @@ router.get("/logout", getLogout);
 router.post("/login", postLogin);
 router.get("/login", getLogin);
 router.get("/error", showerror);
+router.put("/users/:userId/updatepassword", putPasssword);
+router.put("/users/:userId/forgetpassword", putPasssword);
 
 module.exports = router;
