@@ -7,25 +7,26 @@ const passport = require("passport");
 require("./config/passport")(passport);
 require("dotenv").config();
 
-app.get("/", (req, res) => {
-  res.send("Hello, World!");
-});
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
-app.use(flash());
+app.use(cookieParser());
+
 app.use(
   session({
-    secret: "secret",
-    resave: false, // we can resave the session if nothing is change
-    saveUninitialized: false, //we can save empty value
+    secret: "your-secret-key",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 24 * 60 * 60 * 1000, // 1 day in milliseconds
+      httpOnly: true,
+    },
   })
 );
 
 app.use(passport.initialize());
 app.use(passport.session());
-
-//Body Parser
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(flash());
 
 const cors = require("cors"); //Cross-origin resource sharing (CORS) is a browser mechanism which
 //  enables controlled access to resources located outside of a given domain.

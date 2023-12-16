@@ -81,13 +81,29 @@ const getLogin = async (req, res) => {
   const filePath = path.join(__dirname, "..", "views", "login.html");
   res.sendFile(filePath);
 };
+
 const postLogin = (req, res, next) => {
-  passport.authenticate("local", {
-    successRedirect: "/login",
-    failureRedirect: "/error",
-    failureFlash: true,
+  passport.authenticate("local", (err, user, info) => {
+    if (err) {
+      return next(err);
+    }
+
+    if (!user) {
+      return res.redirect("/error");
+    }
+
+    req.logIn(user, (err) => {
+      if (err) {
+        return next(err);
+      }
+
+      console.log("Login Request Received");
+      console.log("Session:", req.session);
+      res.redirect("/login");
+    });
   })(req, res, next);
 };
+
 const getLogout = async (req, res) => {
   req.logout((err) => {
     if (err) {
@@ -98,6 +114,7 @@ const getLogout = async (req, res) => {
     }
   });
 };
+
 const showerror = async (req, res) => {
   const filePath = path.join(__dirname, "..", "views", "error.html");
   res.sendFile(filePath);
@@ -106,7 +123,14 @@ const showerror = async (req, res) => {
 const putPasssword = async (req, res, next) => {
   errors = [];
   try {
-    const userId = req.params.userId;
+    // console.log(userId);
+    if (req.isAuthenticated()) {
+      console.log(" Req Authenticated: " + req.user.id);
+    } else {
+      console.log(" Request Not Authenticated            ");
+      return res.status(404).json({ error: "Request not authenticated" });
+    }
+    const userId = req.user.id;
     const { newPassword } = req.body;
 
     const hasLowercase = /[a-z]/.test(newPassword);
@@ -158,7 +182,7 @@ const putPasssword = async (req, res, next) => {
         return res.status(404).json({ error: "User not found" });
       }
 
-      console.log("Password Updated: " + newPassword);
+      console.log("Password Updated ");
 
       res.json({ message: "Password updated successfully" });
     }
