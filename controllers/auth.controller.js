@@ -192,6 +192,34 @@ const putPasssword = async (req, res, next) => {
   }
 };
 
+const postProfileImage = async (req, res) => {
+  try {
+    if (req.isAuthenticated()) {
+      console.log(" Req Authenticated: " + req.user.id);
+    } else {
+      console.log(" Request Not Authenticated            ");
+      return res.status(404).json({ error: "Request not authenticated" });
+    }
+    if (!req.file) {
+      return res.status(400).json({ message: "No file provided" });
+    }
+    const photo = req.file.filename;
+
+    const userId = req.user.id;
+    const user = await User.findById(userId);
+    console.log(user);
+
+    if (photo) {
+      user.profile_image = photo;
+    }
+    await user.save();
+
+    res.json({ message: "Profile image updated successfully" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   postRegister,
   getLogout,
@@ -199,4 +227,5 @@ module.exports = {
   getLogin,
   putPasssword,
   showerror,
+  postProfileImage,
 };
