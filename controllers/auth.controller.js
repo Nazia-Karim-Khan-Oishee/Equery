@@ -124,12 +124,7 @@ const putPasssword = async (req, res, next) => {
   errors = [];
   try {
     // console.log(userId);
-    if (req.isAuthenticated()) {
-      console.log(" Req Authenticated: " + req.user.id);
-    } else {
-      console.log(" Request Not Authenticated            ");
-      return res.status(404).json({ error: "Request not authenticated" });
-    }
+
     const userId = req.user.id;
     const { newPassword } = req.body;
 
@@ -194,12 +189,6 @@ const putPasssword = async (req, res, next) => {
 
 const postProfileImage = async (req, res) => {
   try {
-    if (req.isAuthenticated()) {
-      console.log(" Req Authenticated: " + req.user.id);
-    } else {
-      console.log(" Request Not Authenticated            ");
-      return res.status(404).json({ error: "Request not authenticated" });
-    }
     if (!req.file) {
       return res.status(400).json({ message: "No file provided" });
     }
@@ -216,7 +205,28 @@ const postProfileImage = async (req, res) => {
 
     res.json({ message: "Profile image updated successfully" });
   } catch (error) {
+    console.log("Something went wrong");
     res.status(500).json({ error: error.message });
+  }
+};
+
+const getProfileImage = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+
+    if (!user || !user.profile_image) {
+      return res.status(404).json({ error: "Profile image not found" });
+    }
+
+    // Construct the path to the profile image
+    const imagePath = path.resolve("uploads", user.profile_image);
+
+    // Send the image file in the response
+    console.log("Profile image of user with req.id: " + req.user.id);
+    return res.sendFile(imagePath);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
@@ -228,4 +238,5 @@ module.exports = {
   putPasssword,
   showerror,
   postProfileImage,
+  getProfileImage,
 };

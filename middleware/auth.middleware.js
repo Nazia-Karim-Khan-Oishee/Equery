@@ -1,8 +1,12 @@
 const ensureAuthenticated = (req, res, next) => {
   if (req.isAuthenticated()) {
+    console.log(" Req Authenticated: " + req.user.id);
+
     next();
   } else {
-    res.status(200).json({ error: "You do not have access" });
+    console.log(" Request Not Authenticated            ");
+
+    res.status(400).json({ error: "You do not have access" });
   }
 };
 module.exports = ensureAuthenticated;

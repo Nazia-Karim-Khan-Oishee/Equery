@@ -58,6 +58,10 @@ mongoose
   });
 
 const port = 3000;
+const ensureAuthenticated = require("./middleware/auth.middleware");
+app.get("/welcome", ensureAuthenticated, (req, res) => {
+  res.sendFile(__dirname + "/views/homePage.html");
+});
 app.listen(port, () => {
   console.log(`Server is running on ${port}`);
 });
