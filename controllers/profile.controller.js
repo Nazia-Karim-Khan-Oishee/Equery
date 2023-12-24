@@ -101,7 +101,7 @@ const getProfileImage = async (req, res) => {
     }
 
     // Construct the path to the profile image
-    const imagePath = path.resolve("uploads", user.profile_image);
+    const imagePath = path.resolve("uploads/images", user.profile_image);
 
     // Send the image file in the response
     console.log("Profile image of user with req.id: " + req.user.id);

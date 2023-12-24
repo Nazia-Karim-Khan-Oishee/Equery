@@ -43,9 +43,11 @@ app.use(
 // app.use(routes);
 const authroutes = require("./routes/auth.route");
 const profileroutes = require("./routes/profile.route");
+const resourceroutes = require("./routes/resource.route");
 
 app.use(authroutes);
 app.use(profileroutes);
+app.use(resourceroutes);
 
 const mongoose = require("mongoose");
 mongoose
