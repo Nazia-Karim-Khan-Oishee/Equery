@@ -5,6 +5,7 @@ const {
   updatePDF,
   updateText,
   deleteResource,
+  getResource,
 } = require("../controllers/resource.controller");
 
 const { uploadResource } = require("../middleware/pdf.middleware");
@@ -33,5 +34,7 @@ router.delete(
   ensureAuthenticated,
   deleteResource
 );
+
+router.get("/getresource/:resourceId", ensureAuthenticated, getResource);
 
 module.exports = router;

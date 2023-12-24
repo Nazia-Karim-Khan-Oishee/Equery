@@ -100,10 +100,8 @@ const getProfileImage = async (req, res) => {
       return res.status(404).json({ error: "Profile image not found" });
     }
 
-    // Construct the path to the profile image
     const imagePath = path.resolve("uploads/images", user.profile_image);
 
-    // Send the image file in the response
     console.log("Profile image of user with req.id: " + req.user.id);
     return res.sendFile(imagePath);
   } catch (error) {
@@ -150,10 +148,61 @@ const getProfile = async (req, res) => {
   }
 };
 
+const updateProfilePicture = async (req, res, next) => {
+  // console.log(userId);
+
+  const userId = req.user.id;
+
+  if (!req.file) {
+    return res.status(400).json({ message: "No file provided" });
+  }
+  const photo = req.file.filename;
+
+  // Update the user's name in the database
+  const updatedUser = await User.findByIdAndUpdate(
+    userId,
+    { profile_image: photo },
+    { new: true }
+  );
+
+  if (!updatedUser) {
+    console.log("No user found");
+    return res.status(404).json({ error: "User not found" });
+  }
+
+  console.log("Profile picture Updated ");
+
+  res.json({ message: "Profile picture successfully" });
+};
+
+const deleteProfileImage = async (req, res, next) => {
+  try {
+    const updatedUser = await User.findOneAndUpdate(
+      { _id: req.params.id },
+      { $unset: { profile_image: 1 } },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      console.log("User not found");
+      res.json({ message: "Can not delete picture" });
+    }
+
+    console.log("Profile image deleted successfully");
+
+    res.json({ message: "Profile picture deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting profile image:", error);
+    throw error;
+  }
+};
+
 module.exports = {
   updatePasssword,
   postProfileImage,
   getProfileImage,
   updateUserName,
   getProfile,
+  updateProfilePicture,
+  deleteProfileImage,
 };

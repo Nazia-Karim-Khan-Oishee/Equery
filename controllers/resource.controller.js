@@ -1,6 +1,7 @@
 const { response } = require("express");
 const Resource = require("../datamodels/Resource.model");
 const path = require("path");
+const fs = require("fs");
 
 const createResource = async (req, res) => {
   try {
@@ -131,9 +132,26 @@ const deleteResource = async (req, res, next) => {
   }
 };
 
+const getResource = async (req, res, next) => {
+  try {
+    const existingresourceID = req.params.resourceId;
+    const existingResource = await Resource.findById(
+      existingresourceID,
+      "-uploader"
+    );
+
+    res.status(200).json({ existingResource });
+    console.log(existingResource.pdf);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   createResource,
   updateText,
   updatePDF,
+  getResource,
   deleteResource,
 };
