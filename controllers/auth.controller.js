@@ -187,56 +187,11 @@ const putPasssword = async (req, res, next) => {
   }
 };
 
-const postProfileImage = async (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({ message: "No file provided" });
-    }
-    const photo = req.file.filename;
-
-    const userId = req.user.id;
-    const user = await User.findById(userId);
-    console.log(user);
-
-    if (photo) {
-      user.profile_image = photo;
-    }
-    await user.save();
-
-    res.json({ message: "Profile image updated successfully" });
-  } catch (error) {
-    console.log("Something went wrong");
-    res.status(500).json({ error: error.message });
-  }
-};
-
-const getProfileImage = async (req, res) => {
-  try {
-    const user = await User.findById(req.user.id);
-
-    if (!user || !user.profile_image) {
-      return res.status(404).json({ error: "Profile image not found" });
-    }
-
-    // Construct the path to the profile image
-    const imagePath = path.resolve("uploads", user.profile_image);
-
-    // Send the image file in the response
-    console.log("Profile image of user with req.id: " + req.user.id);
-    return res.sendFile(imagePath);
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: "Internal Server Error" });
-  }
-};
-
 module.exports = {
   postRegister,
+  putPasssword,
   getLogout,
   postLogin,
   getLogin,
-  putPasssword,
   showerror,
-  postProfileImage,
-  getProfileImage,
 };
