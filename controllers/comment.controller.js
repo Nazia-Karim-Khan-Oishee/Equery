@@ -140,7 +140,7 @@ const deleteComment = async (req, res) => {
     const deletedComment = await Comment.findByIdAndDelete(commentID);
 
     console.log("Comment Deleted");
-    res.status(200).json({ response: "Comment deleted" });
+    res.status(200).json({ Response: "Comment Deleted" });
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
