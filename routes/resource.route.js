@@ -17,6 +17,7 @@ router.post(
   uploadResource.single("pdf"),
   createResource
 );
+
 router.patch(
   "/resource/updateText/:resourceId",
   ensureAuthenticated,

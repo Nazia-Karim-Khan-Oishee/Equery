@@ -10,10 +10,12 @@ const {
 } = require("../controllers/auth.controller");
 
 router.post("/register", postRegister);
-router.get("/logout", getLogout);
 router.post("/login", postLogin);
+
+router.get("/logout", getLogout);
 router.get("/login", getLogin);
 router.get("/error", showerror);
+
 router.patch("/users/forgetpassword/:id", forgetPasssword);
 
 module.exports = router;

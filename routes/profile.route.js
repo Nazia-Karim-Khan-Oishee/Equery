@@ -28,8 +28,10 @@ router.post(
   uploadProfileImage.single("image"),
   postProfileImage
 );
+
 router.get("/getprofileimage", ensureAuthenticated, getProfileImage);
 router.get("/getprofile", ensureAuthenticated, getProfile);
+
 router.delete(
   "/user/deletePicture/:id",
   ensureAuthenticated,
