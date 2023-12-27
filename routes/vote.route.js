@@ -1,9 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const { postVote } = require("../controllers/vote.controller");
+const {
+  postVote,
+  postVotetoComment,
+} = require("../controllers/vote.controller");
 
 const ensureAuthenticated = require("../middleware/auth.middleware");
 
-router.post("/postVote", ensureAuthenticated, postVote);
+router.post("/postVote/Question", ensureAuthenticated, postVote);
+router.post("/postVote/Comment", ensureAuthenticated, postVotetoComment);
 
 module.exports = router;

@@ -1,7 +1,15 @@
 const mongoose = require("mongoose");
 
 const voteSchema = new mongoose.Schema({
-  questionId: { type: mongoose.Schema.Types.ObjectId, ref: "Question" },
+  questionId: {
+    type: mongoose.Schema.Types.ObjectId,
+    refPath: "onModel",
+  },
+  onModel: {
+    type: String,
+    default: "Question",
+    enum: ["Question", "Comment"],
+  },
   voterId: String,
   typeOfVote: {
     type: String,
