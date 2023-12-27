@@ -22,6 +22,11 @@ const UserSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
+  googleId: {
+    type: String,
+    unique: true,
+    sparse: true, // Allows null or undefined values, ensuring uniqueness for non-null values
+  },
 });
 
 const User = mongoose.model("User", UserSchema);

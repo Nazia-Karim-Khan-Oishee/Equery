@@ -11,19 +11,6 @@ const {
   showerror,
 } = require("../controllers/auth.controller");
 
-router.get(
-  "/auth/google",
-  passport.authenticate("google", { scope: ["email"] })
-);
-
-router.get(
-  "/auth/google/callback",
-  passport.authenticate("google", { failureRedirect: "/error" }),
-  (req, res) => {
-    res.redirect("/login");
-  }
-);
-
 router.post("/register", postRegister);
 router.post("/login", postLogin);
 
@@ -32,5 +19,11 @@ router.get("/login", getLogin);
 router.get("/error", showerror);
 
 router.patch("/users/forgetpassword/:id", forgetPasssword);
-
+router.get(
+  "/auth/google",
+  passport.authenticate("google", {
+    successRedirect: "/login", // Redirect to a success page
+    failureRedirect: "/error", // Redirect to the home page or login page on failure
+  })
+);
 module.exports = router;
