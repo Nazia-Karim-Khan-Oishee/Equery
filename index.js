@@ -46,12 +46,14 @@ const profileroutes = require("./routes/profile.route");
 const resourceroutes = require("./routes/resource.route");
 const questionroutes = require("./routes/questions.route");
 const commentroutes = require("./routes/comment.route");
+const voteroutes = require("./routes/vote.route");
 
 app.use(authroutes);
 app.use(profileroutes);
 app.use(resourceroutes);
 app.use(questionroutes);
 app.use(commentroutes);
+app.use(voteroutes);
 
 const mongoose = require("mongoose");
 mongoose
