@@ -52,4 +52,32 @@ const Deletebookmark = async (req, res) => {
   }
 };
 
-module.exports = { bookmarkComment, Deletebookmark };
+const getBookmarks = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    // Find all bookmarks for the specified user, populate the associated comments
+    const userBookmarks = await Bookmark.find({ userId }).populate("commentId");
+
+    // Check if bookmarks or comments are null
+    if (!userBookmarks || userBookmarks.length === 0) {
+      return res
+        .status(404)
+        .json({ error: "No bookmarks found for the user." });
+    }
+
+    // Extract text from each comment, handling null cases
+    const commentTexts = userBookmarks.map((bookmark) =>
+      bookmark.commentId ? bookmark.commentId.comment : null
+    );
+
+    console.log("Got Bookmarks with Comments");
+
+    res.status(200).json(commentTexts);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+module.exports = { bookmarkComment, Deletebookmark, getBookmarks };

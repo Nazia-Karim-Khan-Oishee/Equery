@@ -8,6 +8,9 @@ const {
   getProfile,
   updateProfilePicture,
   deleteProfileImage,
+  getResourcesByUser,
+  getQuestionsByUser,
+  getCommentsByUser,
 } = require("../controllers/profile.controller");
 
 const { uploadProfileImage } = require("../middleware/image.middleware");
@@ -31,6 +34,9 @@ router.post(
 
 router.get("/getprofileimage", ensureAuthenticated, getProfileImage);
 router.get("/getprofile", ensureAuthenticated, getProfile);
+router.get("/activity/getResources", ensureAuthenticated, getResourcesByUser);
+router.get("/activity/getQuestions", ensureAuthenticated, getQuestionsByUser);
+router.get("/activity/getComments", ensureAuthenticated, getCommentsByUser);
 
 router.delete(
   "/user/deletePicture/:id",

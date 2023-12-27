@@ -16,9 +16,9 @@ const createQuestion = async (req, res) => {
   }
 };
 
-const updateQuestion = async (req, res) => {
+const updateQuestionsText = async (req, res) => {
   try {
-    const { text, topic } = req.body;
+    const { text } = req.body;
     const questionID = req.query.questionID;
 
     const existingQuestion = await Question.findById(questionID);
@@ -35,7 +35,38 @@ const updateQuestion = async (req, res) => {
 
     const updatedQuestion = await Question.findByIdAndUpdate(
       questionID,
-      { text: text, topic: topic },
+      { text: text },
+      { new: true }
+    );
+
+    console.log("Question Updated ");
+    res.status(200).json(updatedQuestion);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+const updateQuestionsTopic = async (req, res) => {
+  try {
+    const { topic } = req.body;
+    const questionID = req.query.questionID;
+
+    const existingQuestion = await Question.findById(questionID);
+
+    if (!existingQuestion) {
+      console.log("Question not found");
+      return res.status(404).json({ error: "Question not found" });
+    }
+
+    if (existingQuestion.uploaderId !== req.user.id) {
+      console.log("Unauthorized");
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const updatedQuestion = await Question.findByIdAndUpdate(
+      questionID,
+      { topic: topic },
       { new: true }
     );
 
@@ -160,7 +191,8 @@ const searchQuestions = async (req, res) => {
 
 module.exports = {
   createQuestion,
-  updateQuestion,
+  updateQuestionsText,
+  updateQuestionsTopic,
   deleteQuestion,
   searchQuestions,
   readQuestion,

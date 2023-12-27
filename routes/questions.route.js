@@ -2,7 +2,8 @@ const express = require("express");
 const router = express.Router();
 const {
   createQuestion,
-  updateQuestion,
+  updateQuestionsText,
+  updateQuestionsTopic,
   deleteQuestion,
   readQuestion,
   searchQuestionsByTopic,
@@ -12,7 +13,8 @@ const {
 const ensureAuthenticated = require("../middleware/auth.middleware");
 
 router.post("/postQuestion", ensureAuthenticated, createQuestion);
-router.put("/updateQuestion", ensureAuthenticated, updateQuestion);
+router.patch("/updateQuestionText", ensureAuthenticated, updateQuestionsText);
+router.patch("/updateQuestionTopic", ensureAuthenticated, updateQuestionsTopic);
 router.delete("/deleteQuestion", ensureAuthenticated, deleteQuestion);
 router.get("/readQuestion", ensureAuthenticated, readQuestion);
 router.get(

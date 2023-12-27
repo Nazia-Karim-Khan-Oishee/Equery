@@ -1,5 +1,9 @@
 const User = require("../datamodels/User.model");
 const path = require("path");
+const Resource = require("../datamodels/Resource.model");
+const Question = require("../datamodels/Question.model");
+const Comment = require("../datamodels/Comment.model");
+
 const bcrypt = require("bcrypt");
 
 const updatePasssword = async (req, res, next) => {
@@ -197,6 +201,71 @@ const deleteProfileImage = async (req, res, next) => {
   }
 };
 
+const getResourcesByUser = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const userResources = await Resource.find({ uploader: userId });
+
+    if (!userResources || userResources.length === 0) {
+      return res
+        .status(404)
+        .json({ error: "No resources found for the user." });
+    }
+
+    console.log("Got Resources posted by the user");
+
+    res.status(200).json(userResources);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+const getQuestionsByUser = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const userQuestions = await Question.find({ uploaderId: userId });
+
+    if (!userQuestions || userQuestions.length === 0) {
+      return res
+        .status(404)
+        .json({ error: "No resources found for the user." });
+    }
+
+    const questionTexts = userQuestions.map((question) => question.text);
+
+    console.log("Got Questions posted by the user");
+
+    res.status(200).json(questionTexts);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+const getCommentsByUser = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const userComments = await Comment.find({ commenterId: userId });
+
+    if (!userComments || userComments.length === 0) {
+      return res.status(404).json({ error: "No Comments found for the user." });
+    }
+
+    const Comments = userComments.map((comment) => comment.comment);
+
+    console.log("Got Comments posted by the user");
+
+    res.status(200).json(Comments);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
 module.exports = {
   updatePasssword,
   postProfileImage,
@@ -204,5 +273,8 @@ module.exports = {
   updateUserName,
   getProfile,
   updateProfilePicture,
+  getResourcesByUser,
+  getQuestionsByUser,
   deleteProfileImage,
+  getCommentsByUser,
 };
