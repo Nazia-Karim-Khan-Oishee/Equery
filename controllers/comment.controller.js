@@ -56,7 +56,44 @@ const addReply = async (req, res) => {
   }
 };
 
+const getCommentAndReplies = async (req, res) => {
+  try {
+    const commentId = req.query.commentId;
+
+    const getCommentWithReplies = async (commentId) => {
+      const comment = await Comment.findById(commentId).populate(
+        "replies.commenterId"
+      );
+
+      if (!comment) {
+        return null;
+      }
+
+      const nestedReplies = await Promise.all(
+        comment.replies.map((reply) => getCommentWithReplies(reply._id))
+      );
+
+      comment.replies = nestedReplies;
+
+      return comment;
+    };
+
+    const commentWithReplies = await getCommentWithReplies(commentId);
+
+    if (!commentWithReplies) {
+      console.log("Comment not found");
+      return res.status(404).json({ error: "Comment not found" });
+    }
+
+    res.status(200).json(commentWithReplies);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
 module.exports = {
   createfirstComment,
   addReply,
+  getCommentAndReplies,
 };
