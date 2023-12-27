@@ -91,9 +91,65 @@ const getCommentAndReplies = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 };
+const updateComment = async (req, res) => {
+  try {
+    const { comment } = req.body;
+    const commentID = req.query.commentID;
 
+    const existingComment = await Comment.findById(commentID);
+
+    if (!existingComment) {
+      console.log("Comment not found");
+      return res.status(404).json({ error: "Comment not found" });
+    }
+
+    if (existingComment.commenterId !== req.user.id) {
+      console.log("Unauthorized");
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const updatedComment = await Comment.findByIdAndUpdate(
+      commentID,
+      { comment: comment },
+      { new: true }
+    );
+
+    console.log("Comment Updated ");
+    res.status(200).json(updatedComment);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+const deleteComment = async (req, res) => {
+  try {
+    const commentID = req.query.commentID;
+
+    const existingComment = await Comment.findById(commentID);
+    if (!existingComment) {
+      console.log("Comment not found");
+      return res.status(404).json({ error: "Comment not found" });
+    }
+
+    if (existingComment.commenterId !== req.user.id) {
+      console.log("Unauthorized");
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const deletedComment = await Comment.findByIdAndDelete(commentID);
+
+    console.log("Comment Deleted");
+    res.status(200).json({ response: "Comment deleted" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+};
 module.exports = {
   createfirstComment,
   addReply,
   getCommentAndReplies,
+  deleteComment,
+  updateComment,
 };

@@ -90,9 +90,79 @@ const readQuestion = async (req, res) => {
   }
 };
 
+const searchQuestionsByTopic = async (req, res) => {
+  try {
+    const topic = req.query.topic;
+
+    const regex = new RegExp(topic, "i");
+
+    const questions = await Question.find({ topic: regex });
+
+    if (!questions || questions.length === 0) {
+      console.log("No questions found for the specified topic");
+      return res
+        .status(404)
+        .json({ error: "No questions found for the specified topic" });
+    }
+
+    const questionsTextOnly = questions.map((question) => question.text);
+    console.log("Read questions.");
+    res.status(200).json(questionsTextOnly);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+const searchQuestions = async (req, res) => {
+  try {
+    const topic = req.query.topic;
+    const startDate = req.query.startDate;
+    const endDate = req.query.endDate;
+
+    const searchCriteria = {};
+
+    if (topic) {
+      const topicRegex = new RegExp(topic, "i");
+      searchCriteria.topic = topicRegex;
+    }
+
+    if (startDate && endDate) {
+      const startDateObj = new Date(startDate);
+      const endDateObj = new Date(endDate);
+      endDateObj.setDate(endDateObj.getDate() + 1);
+
+      searchCriteria.timestamp = { $gte: startDateObj, $lt: endDateObj };
+    } else if (startDate) {
+      searchCriteria.timestamp = { $gte: new Date(startDate) };
+    } else if (endDate) {
+      searchCriteria.timestamp = { $lt: new Date(endDate) };
+    }
+
+    const questions = await Question.find(searchCriteria);
+
+    if (!questions || questions.length === 0) {
+      console.log("No questions found for the specified criteria");
+      return res
+        .status(404)
+        .json({ error: "No questions found for the specified criteria" });
+    }
+
+    const questionsTextOnly = questions.map((question) => question.text);
+    console.log("Read questions.");
+
+    res.status(200).json(questionsTextOnly);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
 module.exports = {
   createQuestion,
   updateQuestion,
   deleteQuestion,
+  searchQuestions,
   readQuestion,
+  searchQuestionsByTopic,
 };
