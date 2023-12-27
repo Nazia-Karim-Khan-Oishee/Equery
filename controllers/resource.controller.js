@@ -1,4 +1,3 @@
-const { response } = require("express");
 const Resource = require("../datamodels/Resource.model");
 const path = require("path");
 const fs = require("fs");

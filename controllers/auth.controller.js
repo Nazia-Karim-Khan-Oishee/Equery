@@ -116,16 +116,16 @@ const getLogout = async (req, res) => {
 };
 
 const showerror = async (req, res) => {
-  const filePath = path.join(__dirname, "..", "views", "error.html");
-  res.sendFile(filePath);
+  // const filePath = path.join(__dirname, "..", "views", "error.html");
+  res.status(400).json({ error: "Login Failed" });
 };
 
-const putPasssword = async (req, res, next) => {
+const forgetPasssword = async (req, res, next) => {
   errors = [];
   try {
     // console.log(userId);
 
-    const userId = req.user.id;
+    const userId = req.params.id;
     const { newPassword } = req.body;
 
     const hasLowercase = /[a-z]/.test(newPassword);
@@ -189,7 +189,7 @@ const putPasssword = async (req, res, next) => {
 
 module.exports = {
   postRegister,
-  putPasssword,
+  forgetPasssword,
   getLogout,
   postLogin,
   getLogin,

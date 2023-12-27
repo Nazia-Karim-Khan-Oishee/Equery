@@ -3,7 +3,7 @@ const router = express.Router();
 const {
   postRegister,
   getLogout,
-  putPasssword,
+  forgetPasssword,
   postLogin,
   getLogin,
   showerror,
@@ -14,6 +14,6 @@ router.get("/logout", getLogout);
 router.post("/login", postLogin);
 router.get("/login", getLogin);
 router.get("/error", showerror);
-router.put("/users/forgetpassword", putPasssword);
+router.patch("/users/forgetpassword/:id", forgetPasssword);
 
 module.exports = router;
