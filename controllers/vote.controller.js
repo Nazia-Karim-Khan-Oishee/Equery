@@ -63,6 +63,62 @@ const postVote = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 };
+const updateVote = async (req, res) => {
+  try {
+    const { voteId } = req.query;
+
+    const voterId = req.user.id;
+    const existingVote = await Vote.findById(voteId);
+
+    if (!existingVote) {
+      return res.status(404).json({ error: "Vote not found" });
+    }
+
+    if (existingVote.voterId.toString() !== req.user.id) {
+      return res.status(400).json({ error: "Unauthorized access" });
+    }
+
+    existingVote.typeOfVote =
+      existingVote.typeOfVote === "upvote" ? "downvote" : "upvote";
+
+    await existingVote.save();
+
+    const question = await Question.findById(existingVote.questionId);
+
+    if (question) {
+      // Update the upvotes and downvotes based on the changed typeOfVote
+      if (existingVote.typeOfVote === "upvote") {
+        question.downvotes += 1;
+        question.upvotes -= 1;
+      } else {
+        question.upvotes += 1;
+        question.downvotes -= 1;
+      }
+
+      await question.save();
+    } else {
+      const comment = await Comment.findById(existingVote.questionId);
+
+      if (comment) {
+        if (existingVote.typeOfVote === "upvote") {
+          comment.downvotes += 1;
+          comment.upvotes -= 1;
+        } else {
+          comment.upvotes += 1;
+          comment.downvotes -= 1;
+        }
+
+        await comment.save();
+      }
+    }
+
+    console.log("Vote updated successfully");
+    res.status(200).json({ message: "Vote updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+};
 
 const postVotetoComment = async (req, res) => {
   try {
@@ -124,4 +180,4 @@ const postVotetoComment = async (req, res) => {
   }
 };
 
-module.exports = { postVote, postVotetoComment };
+module.exports = { postVote, postVotetoComment, updateVote };
