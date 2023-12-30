@@ -12,13 +12,13 @@ const {
 } = require("../controllers/auth.controller");
 
 router.post("/register", postRegister);
-router.post("/login", postLogin);
+router.post("/Userlogin", postLogin);
 
 router.get("/logout", getLogout);
 router.get("/login", getLogin);
 router.get("/error", showerror);
 
-router.patch("/users/forgetpassword/:id", forgetPasssword);
+router.patch("/users/forgetpassword", forgetPasssword);
 router.get(
   "/auth/google",
   passport.authenticate("google", {

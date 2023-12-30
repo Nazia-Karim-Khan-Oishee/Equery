@@ -125,8 +125,14 @@ const forgetPasssword = async (req, res, next) => {
   try {
     // console.log(userId);
 
-    const userId = req.params.id;
-    const { newPassword } = req.body;
+    // const {} = req.body;
+    const { email, newPassword } = req.body;
+    const existingUser = await User.findOne({ email: email });
+
+    if (!existingUser) {
+      console.log("No User with this email");
+      return res.status(404).json({ error: "No User with this email" });
+    }
 
     const hasLowercase = /[a-z]/.test(newPassword);
     const hasUppercase = /[A-Z]/.test(newPassword);
@@ -151,12 +157,6 @@ const forgetPasssword = async (req, res, next) => {
       );
     }
 
-    const existingUser = await User.findById(userId);
-    if (!existingUser) {
-      console.log("User not found");
-      return res.status(404).json({ error: "User not found" });
-    }
-
     if (errors.length > 0) {
       console.log(errors);
       res.status(400).json({ error: errors });
@@ -167,7 +167,7 @@ const forgetPasssword = async (req, res, next) => {
 
       // Update the user's password in the database
       const updatedUser = await User.findByIdAndUpdate(
-        userId,
+        existingUser._id,
         { password: hashedPassword },
         { new: true }
       );
@@ -179,7 +179,9 @@ const forgetPasssword = async (req, res, next) => {
 
       console.log("Password Updated ");
 
-      res.json({ message: "Password updated successfully" });
+      res.redirect("/login");
+
+      // res.json({ message: "Password updated successfully" });
     }
   } catch (error) {
     console.error(error);
