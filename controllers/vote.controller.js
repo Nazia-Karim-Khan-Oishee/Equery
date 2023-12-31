@@ -67,7 +67,7 @@ const updateVote = async (req, res) => {
   try {
     const { voteId } = req.query;
 
-    const voterId = req.user.id;
+    // const voterId = req.user.id;
     const existingVote = await Vote.findById(voteId);
 
     if (!existingVote) {
@@ -180,4 +180,54 @@ const postVotetoComment = async (req, res) => {
   }
 };
 
-module.exports = { postVote, postVotetoComment, updateVote };
+const deleteVote = async (req, res) => {
+  try {
+    const voteId = req.params.Id;
+
+    const voterId = req.user.id;
+    const existingVote = await Vote.findById(voteId);
+    console.log(voteId);
+    if (!existingVote) {
+      return res.status(404).json({ error: "Vote not found" });
+    }
+
+    if (existingVote.voterId.toString() !== voterId) {
+      return res.status(400).json({ error: "Unauthorized access" });
+    }
+
+    const question = await Question.findById(existingVote.questionId);
+
+    if (question) {
+      if (existingVote.typeOfVote === "upvote") {
+        question.upvotes -= 1;
+      } else {
+        question.downvotes -= 1;
+      }
+
+      await question.save();
+    } else {
+      const comment = await Comment.findById(existingVote.questionId);
+
+      if (comment) {
+        if (existingVote.typeOfVote === "upvote") {
+          comment.upvotes -= 1;
+        } else {
+          comment.downvotes -= 1;
+        }
+
+        await comment.save();
+      }
+    }
+    await Vote.findByIdAndDelete(voteId);
+
+    // await deletedVote.save();
+
+    console.log("Vote delted successfully");
+    res.send("Vote updated successfully");
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+module.exports = { postVote, postVotetoComment, updateVote, deleteVote };

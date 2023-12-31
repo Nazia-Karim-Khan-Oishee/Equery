@@ -13,7 +13,7 @@ const {
 } = require("../controllers/auth.controller");
 
 router.post("/register", postRegister);
-router.post("/Userlogin", postLogin);
+router.post("/login", postLogin);
 router.patch("/reset-password/:id/:token", reset_password);
 
 router.get("/logout", getLogout);
