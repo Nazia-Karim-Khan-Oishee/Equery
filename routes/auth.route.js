@@ -8,11 +8,13 @@ const {
   forgetPasssword,
   postLogin,
   getLogin,
+  reset_password,
   showerror,
 } = require("../controllers/auth.controller");
 
 router.post("/register", postRegister);
 router.post("/Userlogin", postLogin);
+router.patch("/reset-password/:id/:token", reset_password);
 
 router.get("/logout", getLogout);
 router.get("/login", getLogin);

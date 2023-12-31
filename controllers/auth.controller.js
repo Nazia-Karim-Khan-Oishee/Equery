@@ -2,6 +2,11 @@ const User = require("../datamodels/User.model");
 const path = require("path");
 const bcrypt = require("bcrypt");
 const passport = require("passport");
+const jwt = require("jsonwebtoken");
+var nodemailer = require("nodemailer");
+
+const JWT_SECRET =
+  "hvdvay6ert72839289()aiyg8t87qt72393293883uhefiuh78ttq3ifi78272jbkj?[]]pou89ywe";
 
 const postRegister = async (req, res, next) => {
   const { email, password } = req.body;
@@ -121,18 +126,42 @@ const showerror = async (req, res) => {
 };
 
 const forgetPasssword = async (req, res, next) => {
-  errors = [];
+  const { email } = req.body;
   try {
-    // console.log(userId);
-
-    // const {} = req.body;
-    const { email, newPassword } = req.body;
-    const existingUser = await User.findOne({ email: email });
-
-    if (!existingUser) {
-      console.log("No User with this email");
-      return res.status(404).json({ error: "No User with this email" });
+    const oldUser = await User.findOne({ email });
+    if (!oldUser) {
+      return res.json({ status: "No user with this email exists!!" });
     }
+
+    const secret = JWT_SECRET + oldUser.password;
+    const token = jwt.sign({ email: oldUser.email, id: oldUser._id }, secret, {
+      expiresIn: "5m",
+    });
+
+    const link = `http://localhost:3000/reset-password/${oldUser._id}/${token}`;
+    console.log(link);
+    res.send("Link has been sent");
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+const reset_password = async (req, res) => {
+  const { id, token } = req.params;
+  const { password } = req.body;
+
+  console.log(password);
+  const oldUser = await User.findOne({ _id: id });
+
+  if (!oldUser) {
+    return res.json({ status: "User Do Not Exists!!" });
+  }
+
+  const secret = JWT_SECRET + oldUser.password;
+
+  try {
+    errors = [];
 
     const hasLowercase = /[a-z]/.test(newPassword);
     const hasUppercase = /[A-Z]/.test(newPassword);
@@ -161,31 +190,23 @@ const forgetPasssword = async (req, res, next) => {
       console.log(errors);
       res.status(400).json({ error: errors });
     } else {
-      // Hash the new password before saving it
+      const verify = jwt.verify(token, secret);
       const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(newPassword, salt);
+      const hash = await bcrypt.hash(password, salt);
 
-      // Update the user's password in the database
-      const updatedUser = await User.findByIdAndUpdate(
-        existingUser._id,
-        { password: hashedPassword },
-        { new: true }
+      await User.updateOne(
+        { _id: id },
+        {
+          $set: {
+            password: hash,
+          },
+        }
       );
-
-      if (!updatedUser) {
-        console.log("No user found");
-        return res.status(404).json({ error: "User not found" });
-      }
-
-      console.log("Password Updated ");
-
-      res.redirect("/login");
-
-      // res.json({ message: "Password updated successfully" });
+      res.json({ status: "password changed" });
     }
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
+    console.log(error);
+    res.status(401).send("Not Verified");
   }
 };
 
@@ -196,4 +217,5 @@ module.exports = {
   postLogin,
   getLogin,
   showerror,
+  reset_password,
 };
