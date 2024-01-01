@@ -115,7 +115,7 @@ const getLogout = async (req, res) => {
     if (err) {
       res.json({ error: err });
     } else {
-      res.status(200).json({ msg: "Logged Out" });
+      res.send("Logged Out");
       console.log("Succesfully logged out");
     }
   });

@@ -182,7 +182,7 @@ const updateProfilePicture = async (req, res, next) => {
 const deleteProfileImage = async (req, res, next) => {
   try {
     const updatedUser = await User.findOneAndUpdate(
-      { _id: req.params.id },
+      { _id: req.user.id },
       { $unset: { profile_image: 1 } },
       { new: true }
     );

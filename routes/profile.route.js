@@ -38,10 +38,6 @@ router.get("/activity/getResources", ensureAuthenticated, getResourcesByUser);
 router.get("/activity/getQuestions", ensureAuthenticated, getQuestionsByUser);
 router.get("/activity/getComments", ensureAuthenticated, getCommentsByUser);
 
-router.delete(
-  "/user/deletePicture/:id",
-  ensureAuthenticated,
-  deleteProfileImage
-);
+router.delete("/user/deletePicture", ensureAuthenticated, deleteProfileImage);
 
 module.exports = router;
