@@ -41,7 +41,7 @@ npm install
   
 Open an integrated terminal and run the below command to start the server- 
 ```bash
-nodemon index
+nodemon index.js
 ```
 Follow the routes to create appropriate API endpoints. You can use Postman for executing API requests.
 
