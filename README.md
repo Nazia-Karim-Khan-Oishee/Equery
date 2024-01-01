@@ -28,7 +28,7 @@ Users can upvote or downvote a question and comment. These votes can be used as 
 ### Other Features
 In addition to the key features mentioned above, Equery also includes a basic authentication system and profile management, including profile image handling.
 
-##Setup Instructions
+## Setup Instructions
 - Run the below command in your terminal to install all the necessary packages - 
 ```bash
 npm install
