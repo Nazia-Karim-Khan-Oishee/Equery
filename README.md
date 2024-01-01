@@ -27,3 +27,5 @@ Users can upvote or downvote a question and comment. These votes can be used as 
 
 ### Other Features
 In addition to the key features mentioned above, Equery also includes a basic authentication system and profile management, including profile image handling.
+
+
