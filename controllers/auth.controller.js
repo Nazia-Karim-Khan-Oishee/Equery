@@ -74,7 +74,7 @@ const postRegister = async (req, res, next) => {
       await newUser.save();
 
       console.log("Registration Successful");
-      res.status(200).json({ success: true });
+      res.status(200).json({ response: "Registration Successful" });
     } catch (error) {
       console.error("Error during registration:", error);
       errors.push("Please try again");
@@ -83,7 +83,7 @@ const postRegister = async (req, res, next) => {
   }
 };
 const getLogin = async (req, res) => {
-  const filePath = path.join(__dirname, "..", "views", "login.html");
+  const filePath = path.join(__dirname, "..", "views", "welcome.html");
   res.sendFile(filePath);
 };
 
@@ -96,6 +96,7 @@ const postLogin = (req, res, next) => {
     if (!user) {
       return res.redirect("/error");
     }
+    // const accessToken = req.body.access_token;
 
     req.logIn(user, (err) => {
       if (err) {
@@ -104,7 +105,7 @@ const postLogin = (req, res, next) => {
 
       console.log("Login Request Received");
       console.log("Session:", req.session);
-      res.redirect("/login");
+      res.redirect("/welcome");
     });
   })(req, res, next);
 };
@@ -121,8 +122,8 @@ const getLogout = async (req, res) => {
 };
 
 const showerror = async (req, res) => {
-  // const filePath = path.join(__dirname, "..", "views", "error.html");
-  res.status(400).json({ error: "Login Failed" });
+  const filePath = path.join(__dirname, "..", "views", "error.html");
+  res.status(400).sendFile(filePath);
 };
 
 const forgetPasssword = async (req, res, next) => {

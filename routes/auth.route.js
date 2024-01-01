@@ -17,7 +17,7 @@ router.post("/login", postLogin);
 router.patch("/reset-password/:id/:token", reset_password);
 
 router.get("/logout", getLogout);
-router.get("/login", getLogin);
+router.get("/welcome", getLogin);
 router.get("/error", showerror);
 
 router.patch("/users/forgetpassword", forgetPasssword);
