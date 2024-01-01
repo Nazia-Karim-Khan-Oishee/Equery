@@ -19,8 +19,8 @@ Users can reply to each other's questions via commenting, facilitating knowledge
 ### Upload Resource
 Users can contribute by uploading resources. Resources are available for all other authenticated users to access and can be uploaded as a PDF document.
 
-### Bookmark Resource
-Users can bookmark a resource of their preference for easy access.
+### Bookmark Comments
+Users can bookmark a comment of their preference for easy access.
 
 ### Voting System
 Users can upvote or downvote a question and comment. These votes can be used as a metric to evaluate the question's or comment's impact or authenticity.
