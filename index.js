@@ -5,6 +5,8 @@ const session = require("express-session");
 const flash = require("express-flash");
 const passport = require("passport");
 require("./config/passport")(passport);
+require("./config/auth")(passport);
+
 require("dotenv").config();
 
 app.use(express.json());
@@ -26,6 +28,9 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
+// const initializePassport = require("./config/auth");
+// initializePassport(passport);
+// app.use(initializePassport);
 app.use(flash());
 
 const cors = require("cors"); //Cross-origin resource sharing (CORS) is a browser mechanism which

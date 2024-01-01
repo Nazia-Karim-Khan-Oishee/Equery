@@ -1,8 +1,8 @@
 const Question = require("../datamodels/Question.model");
 const Comment = require("../datamodels/Comment.model");
 
-const path = require("path");
-const fs = require("fs");
+// const path = require("path");
+// const fs = require("fs");
 
 const createfirstComment = async (req, res) => {
   try {

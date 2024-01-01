@@ -1,10 +1,12 @@
 const GoogleStrategy = require("passport-google-oauth2").Strategy;
 const passport = require("passport");
 const User = require("../datamodels/User.model");
-require("dotenv").config();
+// require("dotenv").config();
+require("dotenv").config({ path: "./.env" });
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
+console.log(GOOGLE_CLIENT_ID);
 
 function initialize(passport) {
   passport.use(
@@ -12,16 +14,22 @@ function initialize(passport) {
       {
         clientID: GOOGLE_CLIENT_ID,
         clientSecret: GOOGLE_CLIENT_SECRET,
-        callbackURL: "https://oauth.pstmn.io/v1/vscode-callback",
+        callbackURL:
+          // "https://oauth.pstmn.io/v1/vscode-callback",
+          "http://localhost:3000/auth/google",
+
+        // callbackURL: " http://localhost:3000/welcome",
+
         passReqToCallback: true,
         scope: ["email", "profile"],
       },
+
       async function (request, accessToken, refreshToken, profile, done) {
         try {
           const user = await User.findOne({ googleId: profile.id });
+          console.log("here");
 
           if (user) {
-            console.log("here");
             // User already exists, return the user
             return done(null, user);
           }

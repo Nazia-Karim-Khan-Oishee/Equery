@@ -12,7 +12,7 @@ const bookmarkComment = async (req, res) => {
     });
 
     if (existingBookmark) {
-      return res.status(400).json({ error: "Comment already bookmarked" });
+      return res.send("Comment is already bookmarked");
     }
 
     const newBookmark = new Bookmark({
@@ -59,11 +59,10 @@ const getBookmarks = async (req, res) => {
     // Find all bookmarks for the specified user, populate the associated comments
     const userBookmarks = await Bookmark.find({ userId }).populate("commentId");
 
-    // Check if bookmarks or comments are null
     if (!userBookmarks || userBookmarks.length === 0) {
       return res
         .status(404)
-        .json({ error: "No bookmarks found for the user." });
+        .json({ response: "No bookmarks found for the user." });
     }
 
     // Extract text from each comment, handling null cases

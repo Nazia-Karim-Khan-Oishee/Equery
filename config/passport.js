@@ -9,14 +9,17 @@ function initialize(passport, getUserByEmail, getUserById) {
 
       if (!user) {
         return done(null, false, { message: "This email is not registered!" });
-      }
-
-      const isMatch = await bcrypt.compare(password, user.password);
-
-      if (isMatch) {
+      } else if (user.googleId) {
+        console.log("OAuth user detected");
         return done(null, user);
       } else {
-        return done(null, false, { message: "Password Incorrect!" });
+        const isMatch = await bcrypt.compare(password, user.password);
+
+        if (isMatch) {
+          return done(null, user);
+        } else {
+          return done(null, false, { message: "Password Incorrect!" });
+        }
       }
     } catch (err) {
       console.error(err);

@@ -164,11 +164,11 @@ const reset_password = async (req, res) => {
   try {
     errors = [];
 
-    const hasLowercase = /[a-z]/.test(newPassword);
-    const hasUppercase = /[A-Z]/.test(newPassword);
-    const hasDigit = /\d/.test(newPassword);
-    const hasSpecialChar = /[@$!%*?&]/.test(newPassword);
-    const isMinimumLength = newPassword.length >= 5;
+    const hasLowercase = /[a-z]/.test(password);
+    const hasUppercase = /[A-Z]/.test(password);
+    const hasDigit = /\d/.test(password);
+    const hasSpecialChar = /[@$!%*?&]/.test(password);
+    const isMinimumLength = password.length >= 5;
 
     if (
       !hasLowercase ||
