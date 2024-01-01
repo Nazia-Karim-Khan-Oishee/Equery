@@ -36,12 +36,12 @@ npm install
 
 - Use your own **MONGO_URI** to connect to the dataase. You can get your own URI from **[here](https://www.mongodb.com/)**
  
-- Use your own **GOOGLE_CLIENT_ID** and **GOOGLE_CLIENT_SECRET** for Google OAuth. You can get your own credential from **[here](https://cloud.google.com/free/?utm_source=google&utm_medium=cpc&utm_campaign=japac-ROA-all-en-dr-BKWS-all-core-trial-PHR-dr-1605216&utm_content=text-ad-none-none-DEV_c-CRE_662845895894-ADGP_Hybrid+%7C+BKWS+-+BRO+%7C+Txt+~+GCP_General_gcp_misc-KWID_43700077169324293-aud-1596662389134:kwd-299298611221&userloc_1001441-network_g&utm_term=KW_google%20clud&gad_source=1&gclid=CjwKCAiA4smsBhAEEiwAO6DEjfO5wklwgkzZWOroH_W47vvVnc5vtSgPE_XL_5uWlNmFKf-0ohSJtxoCCUgQAvD_BwE&gclsrc=aw.ds)https://cloud.google.com/free/?utm_source=google&utm_medium=cpc&utm_campaign=japac-ROA-all-en-dr-BKWS-all-core-trial-PHR-dr-1605216&utm_content=text-ad-none-none-DEV_c-CRE_662845895894-ADGP_Hybrid+%7C+BKWS+-+BRO+%7C+Txt+~+GCP_General_gcp_misc-KWID_43700077169324293-aud-1596662389134:kwd-299298611221&userloc_1001441-network_g&utm_term=KW_google%20clud&gad_source=1&gclid=CjwKCAiA4smsBhAEEiwAO6DEjfO5wklwgkzZWOroH_W47vvVnc5vtSgPE_XL_5uWlNmFKf-0ohSJtxoCCUgQAvD_BwE&gclsrc=aw.ds)**
+- Use your own **GOOGLE_CLIENT_ID** and **GOOGLE_CLIENT_SECRET** for Google OAuth. You can get your own credential from **[here](https://cloud.google.com/free/?utm_source=google&utm_medium=cpc&utm_campaign=japac-ROA-all-en-dr-BKWS-all-core-trial-PHR-dr-1605216&utm_content=text-ad-none-none-DEV_c-CRE_662845895894-ADGP_Hybrid+%7C+BKWS+-+BRO+%7C+Txt+~+GCP_General_gcp_misc-KWID_43700077169324293-aud-1596662389134:kwd-299298611221&userloc_1001441-network_g&utm_term=KW_google%20clud&gad_source=1&gclid=CjwKCAiA4smsBhAEEiwAO6DEjfO5wklwgkzZWOroH_W47vvVnc5vtSgPE_XL_5uWlNmFKf-0ohSJtxoCCUgQAvD_BwE&gclsrc=aw.ds)**
 
   
 Open an integrated terminal and run the below command to start the server- 
 ```bash
 nodemon index
 ```
-Follow the routes to create appropriate API endpoints. You can use postman for executing API requests.
+Follow the routes to create appropriate API endpoints. You can use Postman for executing API requests.
 
