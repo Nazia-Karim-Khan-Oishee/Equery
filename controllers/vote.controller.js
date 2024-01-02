@@ -14,6 +14,8 @@ const postVote = async (req, res) => {
 
     const voterId = req.user.id;
     let reduce = 0;
+    let newVote;
+
     const existingVote = await Vote.findOne({
       questionId,
       voterId,
@@ -29,6 +31,7 @@ const postVote = async (req, res) => {
         reduce = 1;
       }
       await existingVote.save();
+      newVote = existingVote;
     } else {
       const newVote = new Vote({
         questionId,
@@ -57,7 +60,7 @@ const postVote = async (req, res) => {
 
     await question.save();
     console.log("Vote recorded successfully");
-    res.status(200).json({ message: "Vote recorded successfully" });
+    res.status(200).json({ newVote });
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
@@ -113,7 +116,7 @@ const updateVote = async (req, res) => {
     }
 
     console.log("Vote updated successfully");
-    res.status(200).json({ message: "Vote updated successfully" });
+    res.status(200).json({ existingVote });
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
@@ -130,6 +133,7 @@ const postVotetoComment = async (req, res) => {
 
     const voterId = req.user.id;
     let reduce = 0;
+    let newVote;
     const existingVote = await Vote.findOne({
       questionId,
       voterId,
@@ -145,8 +149,9 @@ const postVotetoComment = async (req, res) => {
         reduce = 1;
       }
       await existingVote.save();
+      newVote = existingVote;
     } else {
-      const newVote = new Vote({
+      newVote = new Vote({
         questionId,
         voterId,
         typeOfVote,
@@ -173,7 +178,7 @@ const postVotetoComment = async (req, res) => {
 
     await comment.save();
     console.log("Vote recorded successfully");
-    res.status(200).json({ message: "Vote recorded successfully" });
+    res.status(200).json({ newVote });
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
@@ -222,8 +227,8 @@ const deleteVote = async (req, res) => {
 
     // await deletedVote.save();
 
-    console.log("Vote delted successfully");
-    res.send("Vote updated successfully");
+    console.log("Vote deleted successfully");
+    res.send("Vote deleted successfully");
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");

@@ -23,7 +23,7 @@ const bookmarkComment = async (req, res) => {
     await newBookmark.save();
     console.log("Comment bookmarked successfully");
 
-    res.status(200).json({ response: "Comment bookmarked successfully" });
+    res.status(200).json({ newBookmark });
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
